@@ -1,0 +1,41 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/style.css"/>
+  </head>
+  <body>
+    <div class="head">
+    Login Screen
+  </div>
+  <div class="info">
+      Login in:
+    </div>
+    <form id="login" class="pure-form form" action="/login" method="post" >
+      <label for="username">Enter Username: </label>
+      <input  type="text" id="login-username" name="username" value="">
+      <label for="password">Enter Password: </label>
+      <input type="password" class="form-control" id="login-password" name="password">
+      <input class="pure-button-primary" type="submit" value="Login">
+    </form>
+    <div class="error">
+      <% if (error != "") { %>
+        Error: <%= error %>
+      <% } %>
+    </div>
+  <div class="info">
+    Sign up:
+    <form id="signup" class="pure-form form" action="/signup" method="post" >
+      <label for="username">Create Username: </label>
+      <input  type="text" id="signup-username" name="username" value="">
+      <label for="password">Create Password: </label>
+      <input type="password" class="form-control" id="signup-password" name="password">
+      <input class="pure-button-primary" type="submit" value="Sign Up">
+    </form>
+  </div>
+  <div class="success">
+      <% if (success != "") { %>
+        Success: <%= success %>
+      <% } %>
+  </div>
+  </body>
+</html>

@@ -1,0 +1,26 @@
+.head {
+	text-align: center;
+    background-color: lightblue;
+    border-style: solid;
+    border-width: 2px 2px 2px 2px;
+    border-color: #88a8e0;
+    padding: 15px 15px;
+}
+
+.info {
+	padding: 15px 15px;
+}
+
+.error {
+	color: red;
+	padding: 15px;
+}
+
+.success {
+	color: green;
+	padding: 15px;
+}
+
+.form {
+	padding-left: 15px;
+}
