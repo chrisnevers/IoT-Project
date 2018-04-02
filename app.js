@@ -5,6 +5,8 @@ const session      	= require('express-session')
 const mysql 		= require('mysql')
 const bcrypt 		= require('bcryptjs')
 const rpio 			= require('rpio')
+const awsIot 		= require ('aws-iot-device-sdk')
+const moment 		= require('moment')
 
 // GPIO pin mappings
 const red = 20
@@ -21,6 +23,23 @@ rpio.init({mapping: 'gpio'})
 
 rpio.open(red, rpio.OUTPUT)
 rpio.open(green, rpio.OUTPUT)
+
+// AWS IOT Button Device Info
+const device = awsIot.device({
+	// debug: true,
+	keyPath: 'aws_keys/private.pem.key',
+	certPath: 'aws_keys/certificate.pem.crt',
+	caPath: 'aws_keys/root-CA.crt',
+	clientId: 'IOT-Button-1',
+	host: 'a555ho3l29mvv.iot.us-west-2.amazonaws.com'
+})
+
+const awsDeviceId = 'G030MD046381H7E1';
+
+device.on('connect', function() {
+	console.log('Connected to AWS IoT button!')
+	device.subscribe('iotbutton/' + awsDeviceId)
+})
 
 // Create application
 const app 			= express()
@@ -132,11 +151,29 @@ app.post('/login', function (req, res) {
 })
 
 io.on('connection', function (socket) {
-	socket.emit('news', { "message": "hello world" })
-	socket.on('my other event', function (data) {
-		console.log(data)
+	// socket.emit('news', { "message": "hello world" })
+	device.on('message', function(topic, payload) {
+		socket.emit('news', { "message": payload.toString() })
+		
+		// Create sql query to grab pw from DB
+		sql = "INSERT INTO iotlog (ldate, ltime, devname, logentry) VALUES (NOW(), \'" + getTime() + "\', \'" + awsDeviceId + "\', \'" + payload.toString() + "\');"
+
+		connection.query(sql, function(err, result) {
+			if (err) {
+				console.log("MySQL insertion error logging aws msg: " + err)
+			} else {
+				console.log("Logged AWS message" + payload.toString())
+			}
+		})
 	})
+	// socket.on('my other event', function (data) {
+	// 	console.log(data)
+	// })
 })
+
+function getTime() {
+	return moment().format('LTS')
+}
 
 function greenLightOn() {
 	rpio.write(green, rpio.HIGH)
