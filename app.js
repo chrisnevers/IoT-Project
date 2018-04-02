@@ -4,9 +4,28 @@ const bodyParser   	= require('body-parser')
 const session      	= require('express-session')
 const mysql 		= require('mysql')
 const bcrypt 		= require('bcryptjs')
+const rpio 			= require('rpio')
 
+// GPIO pin mappings
+const red = 20
+const green = 21
+var redTimer = 0
+var greenTimer = 0
+var offTimer = 0
+
+// PW hashing stuff
 const saltRounds = 10;
-const app = express()
+
+// Set up GPIO LEDs
+rpio.init({mapping: 'gpio'})
+
+rpio.open(red, rpio.OUTPUT)
+rpio.open(green, rpio.OUTPUT)
+
+// Create application
+const app 			= express()
+const server 		= require('http').createServer(app);
+const io 			= require('socket.io')(server);
 
 // Enter MySQL credentials
 const connection = mysql.createConnection({
@@ -101,7 +120,8 @@ app.post('/login', function (req, res) {
 				}
 			    if (result) {
 				    console.log("Password matches db password. Logging in " + user)
-					res.redirect('/home')
+					res.render('home', { user: user })
+					// res.redirect('/home')
 			    } else {
 			    	console.log("Password does not match db password. Rejecting " + user)
 			    	res.render('index', { error: 'Username/password not found', success: '' })
@@ -111,12 +131,56 @@ app.post('/login', function (req, res) {
 	})
 })
 
-app.get('/home', function (req, res) {
-	res.render('home', {'name': 'Chris' })
+io.on('connection', function (socket) {
+	socket.emit('news', { "message": "hello world" })
+	socket.on('my other event', function (data) {
+		console.log(data)
+	})
 })
+
+function greenLightOn() {
+	rpio.write(green, rpio.HIGH)
+	clearTimeout(offTimer)
+	offTimer = setTimeout(function () {
+		rpio.write(green, rpio.LOW)
+	}, 1000)
+}
+
+function redLightOn() {
+	rpio.write(red, rpio.HIGH)
+	clearTimeout(offTimer)
+	offTimer = setTimeout(function () {
+		rpio.write(red, rpio.LOW)
+	}, 1000)
+}
 
 // Specify port to listen on here
-app.listen(3000, function() {
+server.listen(3000, function() {
 	console.log('IoT listening on port 3000!')
+	// Blink green to show everything is fine
+	greenTimer = setInterval(greenLightOn, 3000)
 })
 
+function error (msg) {
+	console.log("Error: " + msg)
+	// If error stop blinking green
+	rpio.write(green, rpio.LOW)
+	clearInterval(greenTimer)
+	// Start blinking red
+	redTimer = setInterval(redLightOn, 3000)
+}
+
+function cleanup () {
+	// On exit, clear all blink timers
+	clearInterval(greenTimer)
+	clearInterval(redTimer)
+	// Turn off all lights
+	rpio.write(red, rpio.LOW)
+	rpio.write(green, rpio.LOW)
+	// Shutdown server & exit
+	server.close()
+	process.exit()
+}
+
+process.on('SIGINT', function() { cleanup() })
+process.on('uncaughtException', function() { cleanup() })

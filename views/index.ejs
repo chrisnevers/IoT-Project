@@ -5,37 +5,46 @@
   </head>
   <body>
     <div class="head">
-    Login Screen
-  </div>
-  <div class="info">
-      Login in:
+      Login Screen
     </div>
-    <form id="login" class="pure-form form" action="/login" method="post" >
-      <label for="username">Enter Username: </label>
-      <input  type="text" id="login-username" name="username" value="">
-      <label for="password">Enter Password: </label>
-      <input type="password" class="form-control" id="login-password" name="password">
-      <input class="pure-button-primary" type="submit" value="Login">
-    </form>
-    <div class="error">
-      <% if (error != "") { %>
-        Error: <%= error %>
-      <% } %>
+  <div class="pure-g">
+
+    <div class="pure-u-1-2">
+      <div class="info">
+          Login in:
+      </div>
+      <form id="login" class="pure-form-stacked form" action="/login" method="post" >
+        <label for="username">Enter Username: </label>
+        <input  type="text" id="login-username" name="username" value="">
+        <label for="password">Enter Password: </label>
+        <input type="password" class="form-control" id="login-password" name="password">
+        <input class="pure-button-primary" type="submit" value="Login">
+      </form>
+      <div class="error">
+        <% if (error != "") { %>
+          Error: <%= error %>
+        <% } %>
+      </div>
     </div>
-  <div class="info">
-    Sign up:
-    <form id="signup" class="pure-form form" action="/signup" method="post" >
-      <label for="username">Create Username: </label>
-      <input  type="text" id="signup-username" name="username" value="">
-      <label for="password">Create Password: </label>
-      <input type="password" class="form-control" id="signup-password" name="password">
-      <input class="pure-button-primary" type="submit" value="Sign Up">
-    </form>
-  </div>
-  <div class="success">
-      <% if (success != "") { %>
-        Success: <%= success %>
-      <% } %>
+
+    <div class="pure-u-1-2">
+      <div class="info">
+        Sign up:
+      </div>
+      <form id="signup" class="pure-form-stacked form" action="/signup" method="post" >
+        <label for="username">Create Username: </label>
+        <input  type="text" id="signup-username" name="username" value="">
+        <label for="password">Create Password: </label>
+        <input type="password" class="form-control" id="signup-password" name="password">
+        <input class="pure-button-primary" type="submit" value="Sign Up">
+      </form>
+      <div class="success">
+          <% if (success != "") { %>
+            Success: <%= success %>
+          <% } %>
+      </div>
+    </div>
+
   </div>
   </body>
 </html>
