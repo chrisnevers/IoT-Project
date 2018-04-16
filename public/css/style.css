@@ -1,10 +1,6 @@
 .head {
-	text-align: center;
-    background-color: lightblue;
-    border-style: solid;
-    border-width: 2px 2px 2px 2px;
-    border-color: #88a8e0;
-    padding: 15px 15px;
+    color: white;
+    font-size: 24px;
 }
 
 .info {
@@ -23,4 +19,11 @@
 
 .form {
 	padding-left: 15px;
+}
+
+.video-container {
+    display: inline-block;
+    height: 360px;
+    text-align: center;
+    border-radius: 25px;
 }

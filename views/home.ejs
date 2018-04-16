@@ -1,23 +1,44 @@
 <html>
   <head>
-  	<link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
     <link rel="stylesheet" href="css/style.css"/>
     <script src="/socket.io/socket.io.js"></script>
-	<script>
-	  var socket = io();
-	  socket.on('news', function (data) {
-	    console.log(data);
-	    document.getElementById("text").innerHTML = data.message
-	    socket.emit('my other event', { my: 'data' });
-	  });
-	</script>
+  <script>
+    var socket = io();
+    socket.removeAllListeners()
+    socket.on('news', function (data) {
+      console.log(data);
+      var string = "Streaming is " + (data.status ? "on" : "off")
+      text = document.getElementById("text").innerHTML = string
+      socket.emit('my other event', { my: 'data' });
+    });
+  </script>
   </head>
-  <body>
-  	<div class="head">
-  		Welcome, <%= user %>!
-  	</div>
-  	<div id="text">
-  		No Messages
-  	</div>
+  <body class="body" style="background-color: lightcyan" >
+    <header class="card-panel teal lighten-2 head">
+      Welcome, <%= user %>!
+      Live Stream:
+      <div style="float:right">
+        <form action="/logout" method="post">
+            <button class="waves-light btn amber" name="logout" value="logout">Logout</button>
+        </form>
+      </div>
+    </header>
+    <div>
+      <div class="center">
+        <div id="text" class="card-panel amber accent-2" style="display:inline-block">
+          Streaming is <%= status %>
+        </div>
+      </div>
+      <div class="pure-g">
+        <% for(i = 0; i < cameras.length; ++i) { %>
+          <div class="pure-u-1 pure-u-md-1-3 card-panel grey accent-2 video-container">
+            <img src="http://<%= ip %>:<%= cameras[i] %>/" border="0">
+            <h4>Camera <%= i + 1 %></h4>
+          </div>
+        <% } %>
+      </div>
+    </div>
   </body>
 </html>
