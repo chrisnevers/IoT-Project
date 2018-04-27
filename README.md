@@ -1,31 +1,47 @@
-# IoT-Project
-This project uses Express to run an IoT web application.
+# IOT Project - Chris Nevers
 
-This project allows users to setup camera enabled Raspberry Pis on their home network and stream there anywhere.
+This project allows users to setup camera enabled Raspberry Pis on their home network and stream them from anywhere. This project provides the web server and instructions needed to run the web application on your own machine (given the correct hardware).
 
-Functionality
-======
+# Software Inventory
 
+### Node.js Web Server
+- Utilizes the Express framework to create a Node.js web server
+### Motion
+- Raspberry Pi Zeros use the `motion` package for streaming videos
+ and taking pictures
+- Provides an extensive configuration file to tweak with camera and
+storage settings
 ### AWS Connected
 - Pub/Sub to AWS Topics
     - Web page updates in real time when message is received
 - Integrated with AWS IOT Button
-
 ### MySQL Connected
 - User Authentication
     - Tracks who is currently logged in
 - Stores messages from AWS into DB.
-### Raspberry GPIO
-- Blinking Green Light
-    - Indicates smooth sailing
-- Blinking Red Light
-    - Indicates error
+### RPIO (Raspberry GPIO)
+- Node.js package with an extensive API that allows access to the Pi's GPIO ports
 
+# Hardware Inventory
+### Raspberry Pi
+- Serves as the central node in the project's toplogy. This pi runs the web application. All access from outside the local network gets tunneled through this pi and is forked appropriately. The breakout board with the LEDs are attached to this pi.
+### Rasperry Pi Zero (x2)
+- These Pi's rock the cameras. Given their small size, they are convenient to place anywhere. 
+### Cameras
+- Camera video is streamed to a port on the Pi's localhost.
+### Green and Red LED Lights
+- Lights on breakout board provide convenient indication of whether the server is up and running successfully or has encountered an error.
 
-Adding a New Camera
-======
+# Value and Differentiation
+The value of home security does not need to be explained. People steal online deliveries from a porch while the owner is at work. Parent's may want to keep an eye on their pets or children, especially newborns. The reality is we cannot always be home guarding our property. It is convenient to have the ability to monitor our things. 
 
-1. Boot Raspberry Pi Zero with Raspbian OS.
+This product differs from other similar products in that it is a very cheap alternative. Products such as Nest and Evercam can be very pricey. Part of that price is the inclusion of software that comes with the products. This project is released under open source and is therefore free to use and supplement with new features. 
+
+# Installation
+
+## Adding a New Camera
+
+1. Install Raspbian OS on Raspberry Pi Zero.
 2. Enable ssh and camera from raspi-config.
 3. Install motion package:
 
