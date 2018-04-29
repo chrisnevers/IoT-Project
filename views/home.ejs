@@ -40,5 +40,19 @@
         <% } %>
       </div>
     </div>
+    <div>
+      <header class="card-panel teal lighten-2 head">
+        View Screenshots
+      </header>
+      <form id="screenshot" class="form" action="/getScreenshots" method="post" >
+        <label for="day">Choose a day to view screenshots from: </label>
+        <select name="day" id="day" style="display:inline-block;max-width:200px;">
+          <% for (var i in days) { %>
+            <option value=<%= days[i] %> > <%= days[i] %> </option>
+          <% } %>
+        </select>
+        <input class="waves-light btn teal" type="submit" value="Go">
+      </form>
+    </div>
   </body>
 </html>

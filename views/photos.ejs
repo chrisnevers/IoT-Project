@@ -1,0 +1,23 @@
+<html>
+	<head>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
+		<link rel="stylesheet" href="css/style.css"/>
+		<script src="/socket.io/socket.io.js"></script>
+	</head>
+	<body class="body" style="background-color: lightcyan">
+		<header class="card-panel teal lighten-2 head">
+		  Screenshots from <%= date %>
+		  <div style="float:right">
+		    <form action="/logout" method="post">
+		        <button class="waves-light btn amber" name="logout" value="logout">Logout</button>
+		    </form>
+		  </div>
+		</header>
+		<div>
+		  <% for(i = 0; i < photos.length; ++i) { %>
+		    <img src="<%= photos[i]%>">
+		  <% } %>
+		</div>
+	</body>
+</html>
