@@ -1,6 +1,8 @@
 # IOT Project - Chris Nevers
 
-This project allows users to setup camera enabled Raspberry Pis on their home network and stream them from anywhere. This project provides the web server and instructions needed to run the web application on your own machine (given the correct hardware).
+This project allows users to setup camera enabled Raspberry Pis on their home network and stream their video from anywhere. The cameras will detect motion while streaming and store snapshots. These images can be viewed online. The images will then be deleted after a fixed number of days. 
+
+This project provides the web server and instructions needed to run the web application on your own machine (given the correct hardware).
 
 # Software Inventory
 
@@ -18,10 +20,12 @@ storage settings
 ### MySQL Connected
 - User Authentication
     - Tracks who is currently logged in
-- Stores messages from AWS into DB.
+- Stores messages from AWS into DB
 ### RPIO (Raspberry GPIO)
 - Node.js package with an extensive API that allows access to the Pi's GPIO ports
-
+### Socket<span></span>.io
+- Allows custom event emit/listen functionality
+- Sends data to the web interface in real time
 # Hardware Inventory
 ### Raspberry Pi
 - Serves as the central node in the project's toplogy. This pi runs the web application. All access from outside the local network gets tunneled through this pi and is forked appropriately. The breakout board with the LEDs are attached to this pi.
