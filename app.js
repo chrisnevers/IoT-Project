@@ -8,6 +8,7 @@ const awsIot 		= require ('aws-iot-device-sdk')
 const moment 		= require('moment')
 const externalip 	= require('externalip')
 const asyncHandler 	= require('express-async-handler')
+const { exec } 		= require('child_process');
 
 const gpio			= require('./src/gpio.js')
 const sqlHelper		= require('./src/sqlHelper.js')
@@ -15,7 +16,7 @@ const photoHelper 	= require('./src/photoHelper.js')
 const constants		= require('./src/constants.js')
 
 // Streaming status: Should the cameras be broadcasting their stream?
-var status = true
+var status 	= true
 
 // Set up GPIO LEDs
 gpio.init();
@@ -107,9 +108,28 @@ app.post('/signup', (req, res) => {
 })
 
 app.post('/getScreenshots', asyncHandler(async (req, res, next) => {
-	let photos = await photoHelper.getPhotos(req.body.day);
+	let publicDir = __dirname + "/public/";
+	let photos = await photoHelper.getPhotos(req.body.day, publicDir);
 	let date = req.body.day;
 	res.render('photos', { date: date, photos: photos });
+}));
+
+app.post('/remountRemotes', asyncHandler((req, res, next) => {
+	// command 
+	// sudo sshfs -o allow_other,password_stdin pi@pizero1:/var/lib/motion/ public/images/zero-1 <<< chrispi
+	days = photoHelper.getLastNDays(constants.DAYS_PHOTOS_ARE_KEPT);
+	for (let i = 1; i <= constants.CAMERA_PORTS.length; ++i) {
+		command = "echo \"" + constants.PI_ZEROS_PW + "\" | sudo sshfs -o allow_other,password_stdin pi@pizero" + i + ":/var/lib/motion/ public/images/zero-" + i;
+		exec(command, (err, stdout, stderr) => {
+			if (err) console.log("Error:", err);
+		});
+	}
+	res.render('home', { 
+		cameras: constants.CAMERA_PORTS, 
+		status: (status) ? "on" : "off", 
+		ip : routerIp,
+		days: days
+	});
 }));
 
 app.post('/login', (req, res) => {
@@ -140,7 +160,6 @@ app.post('/login', (req, res) => {
 				    console.log("Password matches db password. Logging in " + user)
 				    req.session.user = user;
 				    res.render('home', { 
-		    			user: user, 
 		    			cameras: constants.CAMERA_PORTS, 
 		    			status: (status) ? "on" : "off", 
 		    			ip : routerIp,

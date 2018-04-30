@@ -1,11 +1,12 @@
+const constants		= require('./constants.js')
 const dateFormat	= require('dateformat')
 const fs 			= require('fs')
 const path 			= require('path')
 
 let self = module.exports = {
-	getPhotosWithDate: async function getPhotosWithDate(date, i, dir, fileType) {
+	getPhotosWithDate: async function getPhotosWithDate(date, i, dir, fileType, publicDir) {
 		let files = [];
-		let list = fs.readdirSync(__dirname + "/public/" + dir);
+		let list = fs.readdirSync(publicDir + dir);
 	    for (j = 0; j < list.length; ++j) {
 	        if (path.extname(list[j]) === fileType && list[j].includes(date)) {
 	            let val = dir + list[j];
@@ -14,15 +15,14 @@ let self = module.exports = {
 	    }
 	    return files;
 	},
-	getPhotos: async function getPhotos (date) {
-		console.log("Getting Photos From Date:", date);
+	getPhotos: async function getPhotos (date, publicDir) {
 		const fileType = ".jpg";
 		let files = [];
 		let length = constants.CAMERA_PORTS.length;
 
 		for (let i = 0; i < length; ++i) {
 			dir = "images/zero-" + (i + 1) + "/";
-			files.push(...(await self.getPhotosWithDate(date, i, dir, fileType)));
+			files.push(...(await self.getPhotosWithDate(date, i, dir, fileType, publicDir)));
 		}
 		return files;
 	},
