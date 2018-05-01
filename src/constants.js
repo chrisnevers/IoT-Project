@@ -7,7 +7,7 @@ module.exports = {
 	AWS_DEVICE_HOST : 'a555ho3l29mvv.iot.us-west-2.amazonaws.com',
 	CAMERA_PORTS : [
 		"8081", // Pi Zero 1 - Forwarded Port 8081 --> 192.168.1.196:8081
-		// "8082" 	// Pi Zero 2 - Forwarded Port 8082 --> 192.168.1.198:8081
+		"8082" 	// Pi Zero 2 - Forwarded Port 8082 --> 192.168.1.198:8081
 	],
 	DAYS_PHOTOS_ARE_KEPT : 7,			// Photos are deleted after seven days by default.
 	PI_ZEROS_PW	: "chrispi",			// This is the pw to all the pi zeros

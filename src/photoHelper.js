@@ -29,7 +29,7 @@ let self = module.exports = {
 	getDateNDaysAgo: function getDateNDaysAgo(n) {
 	    let date = new Date();
 	    date.setDate(date.getDate() - n);
-	    return date.getFullYear() + '-' + ((date.getMonth() < 9 ? '0': '') + (date.getMonth() + 1)) + '-' + date.getDate();
+	    return date.getFullYear() + '-' + ((date.getMonth() < 9 ? '0': '') + (date.getMonth() + 1)) + '-' + ((date.getDate() < 9 ? '0': '') + date.getDate());
 	},
 	getLastNDays: function getLastNDays(n) {
 		let dates = [];

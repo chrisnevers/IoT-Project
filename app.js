@@ -119,7 +119,7 @@ app.post('/remountRemotes', asyncHandler((req, res, next) => {
 	// sudo sshfs -o allow_other,password_stdin pi@pizero1:/var/lib/motion/ public/images/zero-1 <<< chrispi
 	days = photoHelper.getLastNDays(constants.DAYS_PHOTOS_ARE_KEPT);
 	for (let i = 1; i <= constants.CAMERA_PORTS.length; ++i) {
-		command = "echo \"" + constants.PI_ZEROS_PW + "\" | sudo sshfs -o allow_other,password_stdin pi@pizero" + i + ":/var/lib/motion/ public/images/zero-" + i;
+		command = "echo \"" + constants.PI_ZEROS_PW + "\" | sudo sshfs -o allow_other,exec,reconnect,password_stdin pi@pizero" + i + ":/var/lib/motion/ public/images/zero-" + i;
 		exec(command, (err, stdout, stderr) => {
 			if (err) console.log("Error:", err);
 		});
