@@ -75,6 +75,12 @@ The next commands are to fork the incoming connections to the Pi Zeroes so their
 3. Edit chrontab to clean files routinely, run `crontab -e` and append with:
 
         0 0 * * * /bin/sh /home/pi/IoT-Project/src/cronjob.sh
+4. If using an AWS connection to pub/sub, create a directory named `aws_keys` at the project's top level. Paste the following files you've obtained from Amazon here. e.g:
+
+        - certificate.pem.crt
+        - private.pem.key
+        - public.pem.key
+        - root-CA.crt
 
 
 It is important when adding new pi zeroes to add directories to the public/images folder. Make a new directory for each pi zero and name it in the following format: `zero-<NUM>` where `NUM` is 1 based and increases with additional cameras. E.G. `zero-1`.
