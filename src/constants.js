@@ -12,6 +12,7 @@ module.exports = {
 	DAYS_PHOTOS_ARE_KEPT : 7,			// Photos are deleted after seven days by default.
 	PI_ZEROS_PW	: "chrispi",			// This is the pw to all the pi zeros
 	SALT_ROUNDS : 10, 					// PW hashing stuff
+	SSH_RETRY_COUNT: 15,				// How many times it attempts to ping ssh connection in 45 second intervals
 	SQL_HOST     : 'localhost',
 	SQL_USER     : 'root',
 	SQL_PASSWORD : '',
