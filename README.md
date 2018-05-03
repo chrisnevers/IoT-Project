@@ -37,11 +37,60 @@ storage settings
 - Lights on breakout board provide convenient indication of whether the server is up and running successfully or has encountered an error.
 
 # Value and Differentiation
-The value of home security does not need to be explained. People steal online deliveries from a porch while the owner is at work. Parent's may want to keep an eye on their pets or children, especially newborns. The reality is we cannot always be home guarding our property. It is convenient to have the ability to monitor our things. 
+The value of home security cannot be overstated. Many people have busy lifestyles that keep them away from their homes and families. Surveillance systems allow people to monitor their house while away.
 
-This product differs from other similar products in that it is a very cheap alternative. Products such as Nest and Evercam can be very pricey. Part of that price is the inclusion of software that comes with the products. This project is released under open source and is therefore free to use and supplement with new features. 
+
+This product differs from other similar products in that it is a very cheap alternative. Products such as Nest and Evercam can be very pricey. Part of that price is the inclusion of software that comes with the products. This project is released under an open source license and is therefore free to use and supplement with new features. 
 
 # Installation
+
+To run the web server:
+
+First, install the necessary node packages:
+
+`npm install`
+
+Second, run with node (in the background):
+
+`node app.js &`
+
+## Setting Up The Main Processing Pi
+1. Append to the end `/etc/rc.local`:
+        
+        sudo python /var/www/create_initial_login_DB.py &
+        (cd /home/pi/IoT-Project/ && sudo node app.js) &
+        socat TCP-LISTEN:8081,fork TCP:192.168.1.196:8081 &
+        socat TCP-LISTEN:8082,fork TCP:192.168.1.198:8081 &
+
+The first command creates the DB Schema if necessary.
+
+The second command runs the web server on boot.
+
+The next commands are to fork the incoming connections to the Pi Zeroes so their live stream can be viewed outside of the local network.
+
+2. Install `sshfs` to mount external Pi drives to this node:
+        
+        sudo apt-get install sshfs
+
+3. Edit chrontab to clean files routinely, run `crontab -e` and append with:
+
+        0 0 * * * /bin/sh /home/pi/IoT-Project/src/cronjob.sh
+4. If using an AWS connection to pub/sub, create a directory named `aws_keys` at the project's top level. Paste the following files you've obtained from Amazon here. e.g:
+
+        - certificate.pem.crt
+        - private.pem.key
+        - public.pem.key
+        - root-CA.crt
+
+
+It is important when adding new pi zeroes to add directories to the public/images folder. Make a new directory for each pi zero and name it in the following format: `zero-<NUM>` where `NUM` is 1 based and increases with additional cameras. E.G. `zero-1`.
+
+The SSHFS commands can be found in `app.js`. It mounts the Pi Zeroes' `/var/lib/motion/` directory to the main pi's `public/images` directories. It is important to add r/w/x permissions to the motion folder on the pi zero. The main pi will need permission to clean files from it.
+
+You might need to manually run the sshfs command when first connecting a pi to establish a RSA key fingerprint.
+
+In case you need to unmount these directories for any reason run:
+`sudo umount zero-1`
 
 ## Adding a New Camera
 
@@ -79,7 +128,20 @@ This product differs from other similar products in that it is a very cheap alte
         ffmpeg_output_movies off
 
         # set the framerate of the stream (100 for higher quality)
-        framerate 5
+        framerate 1
+
+        output_pictures : best
+
+        minimum_motion_framerate 2
+
+        picture_filename %v-%Y-%m-%d-H-%M-%S-%q
+
+        minimum_frame_time 5
+
+        width : 640
+
+        height: 480
+
 8. Reboot/run : `sudo service motion start`
 9. In your home router page, forward a port to your main pi, e.g. 2500
 10. Then on your main pi add the following to your /etc/rc.local file:
@@ -95,3 +157,35 @@ This product differs from other similar products in that it is a very cheap alte
     8081 - the port that the motion server is streaming on. (8081 by default)
 
     This will forward all incoming connections from port 2500 on the main pi to your new pi.
+
+
+# SQL Schema
+
+<pre>
++--------------------+
+| Tables_in_iotdevdb |
++--------------------+
+| iotlog             |
+| login              |
++--------------------+
+</pre>
+## iotlog table
+<pre>
++------------+--------------------------------------------------+
+| ldate      | ltime    | devname          | logentry           |
++------------+--------------------------------------------------+
+| 2018-05-03 | 08:56:34 | AWS_DEVICE_ID    | {"message": "Hello from AWS IoT console"} |
++------------+--------------------------------------------------+
++------------+--------------------------------------------------+
+</pre>
+
+## login table
+<pre>
++--------------------------------------------------------------+
+| L1            | L2                        | role | logged_in |
++--------------------------------------------------------------+
+| administrator | 25f9e794323b453885f518... | a    |         0 |
+| chris         | $2a$10$IQbVm2BZAHJchat... | a    |         1 |
++--------------------------------------------------------------+
+</pre>
+
