@@ -10,6 +10,7 @@ module.exports = {
 		"8082" 	// Pi Zero 2 - Forwarded Port 8082 --> 192.168.1.198:8081
 	],
 	DAYS_PHOTOS_ARE_KEPT : 7,			// Photos are deleted after seven days by default.
+	PI_ZEROS_PW	: "chrispi",			// This is the pw to all the pi zeros
 	SALT_ROUNDS : 10, 					// PW hashing stuff
 	SQL_HOST     : 'localhost',
 	SQL_USER     : 'root',
